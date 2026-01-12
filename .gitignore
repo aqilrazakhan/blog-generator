@@ -1,0 +1,28 @@
+# Credentials - NEVER commit!
+.env
+
+# Generated articles (your content assets)
+blog-posts/*/
+
+# Local Claude settings
+.claude/settings.local.json
+
+# Reference skill (not part of blog-writer)
+.claude/skills/skill-creator/
+
+# Backup folder
+_backup/
+
+# Python
+*.pyc
+__pycache__/
+venv/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
