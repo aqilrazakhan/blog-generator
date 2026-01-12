@@ -28,11 +28,9 @@
 [PROJECT_ROOT]/
 ├── CLAUDE.md                           ← This file (Claude's memory)
 ├── .env                                ← Your credentials (DO NOT COMMIT)
+├── .env.example                        ← Credentials template
 ├── .gitignore                          ← Protects credentials
 ├── blog-posts/                         ← All articles
-│   ├── generate_article_images.py     ← DALL-E image generator
-│   ├── upload_article_to_wordpress.py ← WordPress publisher
-│   ├── requirements.txt                ← Python dependencies
 │   └── [number]-[article-slug]/       ← Individual articles
 │       ├── article.md                  ← Main content
 │       ├── article-with-images.md      ← Copy for WordPress
@@ -42,8 +40,13 @@
 │       └── code-examples/              ← Optional code files (for technical blogs)
 └── .claude/skills/
     ├── blog-writer/                    ← Article creation skill
-    ├── seo-optimizer/                  ← SEO optimization skill (optional)
-    └── wordpress-helper/               ← WordPress guidance skill (optional)
+    │   ├── SKILL.md                    ← Skill instructions
+    │   ├── scripts/                    ← Python scripts
+    │   │   ├── generate_article_images.py  ← DALL-E image generator
+    │   │   ├── upload_article_to_wordpress.py ← WordPress publisher
+    │   │   └── requirements.txt        ← Python dependencies
+    │   └── references/                 ← Documentation
+    └── skill-creator/                  ← Skill creation helper
 ```
 
 ---
@@ -66,14 +69,14 @@
 - Researches topic based on your blog niche
 - Creates folder: blog-posts/[number]-[slug]/
 - Writes article.md (1,500-3,000 words)
-- Embeds 4-6 Mermaid diagrams
+- Embeds 4-6 CSS/HTML diagrams
 - Adds SEO metadata (title, description, category, tags)
 - Creates IMAGE-SPECIFICATIONS.md
 - Creates README.md
 ```
 
 **Output:**
-- ✅ `article.md` - Complete article with embedded Mermaid diagrams
+- ✅ `article.md` - Complete article with embedded CSS/HTML diagrams
 - ✅ `IMAGE-SPECIFICATIONS.md` - Detailed image specs
 - ✅ `README.md` - Publishing checklist
 - ✅ Image placeholders embedded in article
@@ -85,7 +88,7 @@
 **Claude Action:**
 
 ```python
-# Claude adds DALL-E prompts to generate_article_images.py
+# Claude adds DALL-E prompts to .claude/skills/blog-writer/scripts/generate_article_images.py
 # Prompts include YOUR blog branding watermark
 ARTICLE_PROMPTS = {
     "[number]-[article-slug]": {
@@ -110,16 +113,13 @@ ARTICLE_PROMPTS = {
 **Prerequisite:** OPENAI_API_KEY must be in .env file
 
 ```bash
-# Navigate to blog-posts directory
-cd [PROJECT_ROOT]/blog-posts
-
-# Generate all images automatically
-python3 generate_article_images.py [article-folder-name]
+# From project root, generate all images automatically
+python3 .claude/skills/blog-writer/scripts/generate_article_images.py [article-folder-name]
 ```
 
 **Example:**
 ```bash
-python3 generate_article_images.py 01-introduction-to-topic
+python3 .claude/skills/blog-writer/scripts/generate_article_images.py 01-introduction-to-topic
 ```
 
 **Output:**
@@ -157,12 +157,12 @@ cp article.md article-with-images.md
 # WORDPRESS_APP_PASSWORD="your_app_password"
 
 # Publish article
-python3 upload_article_to_wordpress.py [article-folder-name]
+python3 .claude/skills/blog-writer/scripts/upload_article_to_wordpress.py [article-folder-name]
 ```
 
 **Example:**
 ```bash
-python3 upload_article_to_wordpress.py 01-introduction-to-topic
+python3 .claude/skills/blog-writer/scripts/upload_article_to_wordpress.py 01-introduction-to-topic
 ```
 
 **What happens:**
@@ -192,7 +192,7 @@ python3 upload_article_to_wordpress.py 01-introduction-to-topic
 | **Length** | 1,500 - 3,000 words minimum |
 | **Format** | Markdown with H1 → H2 → H3 hierarchy |
 | **Code Examples** | Language appropriate to your niche (Python, JavaScript, etc.) |
-| **Mermaid Diagrams** | 4-6 per article |
+| **CSS/HTML Diagrams** | 4-6 per article |
 | **Static Images** | 5 images (1 featured + 4 section) with your blog branding |
 | **SEO Title** | Under 60 characters |
 | **Meta Description** | 150-155 characters |
@@ -238,17 +238,25 @@ Adapt based on your blog niche:
 
 ## Visual Content Creation
 
-### Mermaid Diagrams (Automatic)
+### CSS/HTML Diagrams (Automatic)
 
-**Claude creates 4-6 diagrams per article:**
+**Claude creates 4-6 diagrams per article using inline CSS/HTML:**
 
-```mermaid
-graph TD
-    A[Start] --> B[Process]
-    B --> C[Result]
+These diagrams are created with pure HTML and inline CSS styles, ensuring:
+- Full WordPress compatibility (no plugin dependencies)
+- Consistent rendering across all browsers
+- No external JavaScript required
+- Mobile-responsive design
 
-    style B fill:#4A90E2,stroke:#2E5C8A,color:#fff
-    style C fill:#27AE60,stroke:#1E8449,color:#fff
+**Example Diagram Structure:**
+```html
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+  <div style="padding: 15px 25px; background: #4A90E2; color: white; border-radius: 6px; font-weight: bold;">Step 1</div>
+  <div style="font-size: 24px; color: #666;">→</div>
+  <div style="padding: 15px 25px; background: #27AE60; color: white; border-radius: 6px; font-weight: bold;">Step 2</div>
+  <div style="font-size: 24px; color: #666;">→</div>
+  <div style="padding: 15px 25px; background: #9B59B6; color: white; border-radius: 6px; font-weight: bold;">Result</div>
+</div>
 ```
 
 **Standard Colors:**
@@ -258,6 +266,7 @@ graph TD
 - Red `#E74C3C` - Error/Critical
 - Purple `#9B59B6` - Special features
 - Gold `#F5A623` - Input/Output
+- Light Gray `#f8f9fa` - Background containers
 
 ### Static Images (Generated via DALL-E)
 
@@ -283,8 +292,7 @@ All images automatically include YOUR blog name as watermark:
 1. **Automatic (DALL-E 3) - Recommended:**
    ```bash
    # Credentials from .env file
-   cd blog-posts
-   python3 generate_article_images.py [folder-name]
+   python3 .claude/skills/blog-writer/scripts/generate_article_images.py [folder-name]
    ```
 
 2. **Manual (if OPENAI_API_KEY not available):**
@@ -343,8 +351,7 @@ OPENAI_API_KEY="sk-proj-your-key-here"
 
 **Command:**
 ```bash
-cd blog-posts
-python3 upload_article_to_wordpress.py [article-folder]
+python3 .claude/skills/blog-writer/scripts/upload_article_to_wordpress.py [article-folder]
 ```
 
 **What it does:**
@@ -427,8 +434,8 @@ Before delivering article, verify:
 - [ ] Tone appropriate for your audience
 
 **Visuals:**
-- [ ] 4-6 Mermaid diagrams embedded
-- [ ] 5 image prompts added to `generate_article_images.py`
+- [ ] 4-6 CSS/HTML diagrams embedded
+- [ ] 5 image prompts added to `.claude/skills/blog-writer/scripts/generate_article_images.py`
 - [ ] All image prompts include YOUR blog name watermark
 - [ ] IMAGE-SPECIFICATIONS.md created
 - [ ] Image placeholders embedded with markdown syntax
@@ -447,33 +454,25 @@ Before delivering article, verify:
 
 ```bash
 # 1. INITIAL SETUP (one-time)
-# Create .env file with your credentials
-cat > .env << 'EOF'
-OPENAI_API_KEY="sk-proj-your-key"
-WORDPRESS_SITE="https://yourblog.com"
-WORDPRESS_USERNAME="your_username"
-WORDPRESS_APP_PASSWORD="your_app_password"
-BLOG_NAME="Your Blog Name"
-BLOG_NICHE="Your Blog Topic"
-EOF
+# Copy and edit .env.example to create .env
+cp .env.example .env
+# Edit .env with your credentials
 
-# Protect credentials
+# Protect credentials (already in .gitignore)
 echo ".env" >> .gitignore
 
 # Install dependencies
-cd blog-posts
-pip install -r requirements.txt
+pip install -r .claude/skills/blog-writer/scripts/requirements.txt
 
 # 2. CREATE ARTICLE
 # Use the blog-writer skill
 /blog-writer
 
 # 3. GENERATE IMAGES
-cd blog-posts
-python3 generate_article_images.py [folder-name]
+python3 .claude/skills/blog-writer/scripts/generate_article_images.py [folder-name]
 
 # 4. PUBLISH TO WORDPRESS
-python3 upload_article_to_wordpress.py [folder-name]
+python3 .claude/skills/blog-writer/scripts/upload_article_to_wordpress.py [folder-name]
 
 # 5. VIEW RESULTS
 # Click the edit URL provided in terminal output
@@ -529,8 +528,7 @@ python3 upload_article_to_wordpress.py [folder-name]
 - Test credentials manually in WordPress
 
 **"Module not found"**
-- Install dependencies: `pip install -r requirements.txt`
-- Check you're in the `blog-posts/` directory
+- Install dependencies: `pip install -r .claude/skills/blog-writer/scripts/requirements.txt`
 
 **Images not uploading**
 - Check image file sizes (usually max 10MB per image)

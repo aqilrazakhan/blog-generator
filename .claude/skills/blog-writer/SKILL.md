@@ -117,7 +117,7 @@ Bottom right corner contains the text '{BLOG_NAME}' in white modern sans-serif f
 ```
 
 **Add prompts to script:**
-Edit `scripts/generate_article_images.py` and add to `ARTICLE_PROMPTS`:
+Edit `.claude/skills/blog-writer/scripts/generate_article_images.py` and add to `ARTICLE_PROMPTS`:
 
 ```python
 ARTICLE_PROMPTS = {
@@ -134,9 +134,8 @@ ARTICLE_PROMPTS = {
 
 **Run generation:**
 ```bash
-cd blog-posts
-pip install -r requirements.txt  # First time only
-python3 generate_article_images.py {ARTICLE_FOLDER}
+pip install -r .claude/skills/blog-writer/scripts/requirements.txt  # First time only
+python3 .claude/skills/blog-writer/scripts/generate_article_images.py {ARTICLE_FOLDER}
 ```
 
 **For detailed image guide:** See [references/image-guide.md](references/image-guide.md)
@@ -152,7 +151,7 @@ cp article.md article-with-images.md
 
 **Upload to WordPress:**
 ```bash
-python3 upload_article_to_wordpress.py {ARTICLE_FOLDER}
+python3 .claude/skills/blog-writer/scripts/upload_article_to_wordpress.py {ARTICLE_FOLDER}
 ```
 
 **What happens:**
@@ -219,18 +218,17 @@ Next: Review draft -> Check SEO -> Publish
 ```bash
 # Setup (one time)
 cd project-root
-# Create .env with credentials
-pip install -r blog-posts/requirements.txt
+# Create .env with credentials (see .env.example)
+pip install -r .claude/skills/blog-writer/scripts/requirements.txt
 
 # Create article
 /blog-writer
 
 # Generate images
-cd blog-posts
-python3 generate_article_images.py {FOLDER}
+python3 .claude/skills/blog-writer/scripts/generate_article_images.py {FOLDER}
 
 # Publish
-python3 upload_article_to_wordpress.py {FOLDER}
+python3 .claude/skills/blog-writer/scripts/upload_article_to_wordpress.py {FOLDER}
 ```
 
 ---
@@ -240,9 +238,9 @@ python3 upload_article_to_wordpress.py {FOLDER}
 **Common issues:** See [references/troubleshooting.md](references/troubleshooting.md)
 
 **Quick fixes:**
-- "API key not set" → Check `.env` file exists and has correct format
+- "API key not set" → Check `.env` file exists at project root and has correct format
 - "WordPress auth failed" → Remove spaces from app password
-- "Module not found" → Run `pip install -r requirements.txt`
+- "Module not found" → Run `pip install -r .claude/skills/blog-writer/scripts/requirements.txt`
 
 ---
 
